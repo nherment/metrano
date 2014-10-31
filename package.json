@@ -22,9 +22,14 @@
   },
   "homepage": "https://github.com/nherment/metrano",
   "dependencies": {
-    "body-parser": "^1.9.1",
-    "compression": "^1.2.0",
-    "express": "^4.10.0",
-    "moment": "^2.8.3"
+    "body-parser": "1.9.1",
+    "compression": "1.2.0",
+    "express": "4.10.0",
+    "moment": "2.8.3",
+    "pg": "3.6.2"
+  },
+  "devDependencies": {
+    "mocha": "2.0.1",
+    "node-dev": "2.6.0"
   }
 }
