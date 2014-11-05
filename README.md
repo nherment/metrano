@@ -18,6 +18,9 @@ Server
 
 start with ```node metrano.js```
 
+options:
+- ```--cleanup``` to reset the config table
+
 APIs
 ----
 
@@ -46,17 +49,19 @@ requested time interval.
 a single data point:
 
 ```
-POST /feed
+POST /api/feed/<feedName>/<deviceId>
 {
 	value: 123,
 	timestamp: 1414943636741
 }
 ```
 
+The timestamp (in milliseconds) timezone is interpreted as UTC.
+
 ### define a new metric
 
 ```
-POST /feed
+POST /api/feed
 {
 	name: 'temperature',
 	aggregateThresholds: {
@@ -89,7 +94,7 @@ var metrano = new Metrano('http://localhost:3000/')
 
 metrano.define({
 		name: 'temperature',
-		aggregates: {
+		aggregateThresholds: {
 			minute: 0,
 			hour: (2 * 60 * 60 * 1000),
 			day: (2 * 24 * 60 * 60 * 1000),
@@ -99,7 +104,10 @@ metrano.define({
 		// metric ready
 })
 
+metrano.remove(feed, function(err) {
+		// feed removed
+})
 
-metrano.save('temperature', 123, optionalTimestamp, function(err) {
+metrano.save(<feed>, <device_id>, <value>, <UTC_timestamp>, function(err) {
 	// metric saved
 })

@@ -2,7 +2,7 @@
 module.exports = {
   feeds: [{
     name: 'temperature',
-    aggregates: {
+    aggregateThresholds: {
       minute: 0,
       hour: (2 * 60 * 60 * 1000),
       day: (2 * 24 * 60 * 60 * 1000),
@@ -10,7 +10,7 @@ module.exports = {
     }
   }, {
     name: 'visitors',
-    aggregates: {
+    aggregateThresholds: {
       minute: 0,
       hour: (2 * 60 * 60 * 1000),
       day: (2 * 24 * 60 * 60 * 1000),

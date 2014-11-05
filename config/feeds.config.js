@@ -1,12 +1,12 @@
-module.exports = [{
+module.exports = {
 	name: 'feeds',
 	attributes: {
 		name: {
-			type: 'string'
-			unique: true,
+			type: 'character varying',
+			unique: true
 		},
 		aggregateThresholds: {
 			type: 'json'
 		}
 	}
-}]
+}
