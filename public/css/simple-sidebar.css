@@ -18,6 +18,11 @@
     padding-left: 250px;
 }
 
+.chart {
+  margin-top: 2em;
+  margin-bottom: 2em;
+}
+
 #sidebar-wrapper {
     z-index: 1000;
     position: fixed;

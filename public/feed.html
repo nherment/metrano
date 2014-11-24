@@ -89,7 +89,7 @@
                 <input type="text" class="date end" />
               </p>
             </form>
-            <div id="myChart" style="width:100%;height:400px"></div>
+            <div id="myChart" class="chart"></div>
 
           </div>
         </div>
@@ -158,39 +158,57 @@
         // console.log(url, ' > ', rawData ? rawData.length : 0)
 
         //------ rickshaw
+        var max;
+        var min;
         for(var i = 0 ; i < rawData.length ; i++) {
           var measure = rawData[i];
-          data.push({x: new Date(measure.date).getTime()/1000, y: Number(measure.value)})
+          var value = Number(measure.value)
+          if(!max) {
+            max = value;
+          } else if(max < value) {
+            max = value;
+          }
+          if(!min) {
+            min = value;
+          } else if(min > value) {
+            min = value;
+          }
+          data.push({x: new Date(measure.date).getTime()/1000, y: value})
         }
         $('#myChart').html('')
         if(data.length <= 1) {
           return;
         }
+        var maxVariation = max - min;
         var graph = new Rickshaw.Graph( {
           element: document.querySelector("#myChart"),
           renderer: 'line',
-          width: 800,
           height: 400,
+          min: (min - maxVariation*0.1),
+          max: (max + maxVariation*0.1),
           series: [{
             color: 'steelblue',
             data: data
           }]
         });
 
-        graph.render();
-
-        var time = new Rickshaw.Fixtures.Time();
+        // var time = new Rickshaw.Fixtures.Time();
         var xAxis = new Rickshaw.Graph.Axis.Time({
           graph: graph
         });
-        xAxis.render();
+        var yAxis = new Rickshaw.Graph.Axis.Y({
+          graph: graph,
+          tickFormat: function(y){return parseInt(y*100)/100}
+        });
 
         var hoverDetail = new Rickshaw.Graph.HoverDetail( {
           graph: graph,
           formatter: function(series, x, y) {
             return new Date(x*1000) + ': ' + parseInt(y*100)/100
           }
-        } );
+        });
+
+        graph.render();
 
       })
 
