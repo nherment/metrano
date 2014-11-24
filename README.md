@@ -126,7 +126,7 @@ metrano.remove(feed, function(err) {
 		// feed removed
 })
 
-metrano.save(<feed>, <device_id>, <value>, <UTC_timestamp>, function(err) {
+metrano.push(<feed>, <device_id>, <value>, <UTC_timestamp>, function(err) {
 	// metric saved if no error
 })
 ```
