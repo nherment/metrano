@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="">
+  <meta name="author" content="">
+
+  <title>Metrano - feed</title>
+
+  <link href="css/bootstrap.min.css" rel="stylesheet">
+  <link href="css/rickshaw.min.css" rel="stylesheet">
+  <link href="css/simple-sidebar.css" rel="stylesheet">
+
+  <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+  <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+  <!--[if lt IE 9]>
+  <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+  <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+  <![endif]-->
+
+</head>
+
+<body>
+
+  <div id="wrapper">
+
+    <!-- Sidebar -->
+    <div id="sidebar-wrapper">
+      <ul class="sidebar-nav">
+        <li class="sidebar-brand">
+          <a href="#">
+            Start Bootstrap
+          </a>
+        </li>
+        <li>
+          <a href="#">Dashboard</a>
+        </li>
+        <li>
+          <a href="#">Shortcuts</a>
+        </li>
+        <li>
+          <a href="#">Overview</a>
+        </li>
+        <li>
+          <a href="#">Events</a>
+        </li>
+        <li>
+          <a href="#">About</a>
+        </li>
+        <li>
+          <a href="#">Services</a>
+        </li>
+        <li>
+          <a href="#">Contact</a>
+        </li>
+      </ul>
+    </div>
+    <!-- /#sidebar-wrapper -->
+
+    <!-- Page Content -->
+    <div id="page-content-wrapper">
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-lg-12">
+            <h1 data-value="name"></h1>
+            <ul>
+              <li>minute: <span data-value="aggregateThresholds.minute"></span></li>
+              <li>hour: <span data-value="aggregateThresholds.hour"></span></li>
+              <li>day: <span data-value="aggregateThresholds.day"></span></li>
+              <li>month: <span data-value="aggregateThresholds.month"></span></li>
+              <li>year: <span data-value="aggregateThresholds.year"></span></li>
+            </ul>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-lg-12">
+            <form>
+              <input id="dateSelection" type="range" name="points" min="1" max="1000"/>
+            </form>
+            <div id="myChart" style="width:100%;height:400px"></div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- /#page-content-wrapper -->
+
+  </div>
+  <!-- /#wrapper -->
+
+  <script src="js/jquery-2.1.1.min.js"></script>
+  <script src="js/jquery-url.js"></script>
+  <script src="js/bootstrap.min.js"></script>
+  <script src="js/d3.v3.js"></script>
+  <script src="js/rickshaw.min.js"></script>
+
+  <!-- Menu Toggle Script -->
+  <script>
+  $(document).ready(function() {
+    var feedName = $.urlParam('name')
+    $.get('/api/feeds/'+feedName, function(feed) {
+      $('[data-value]').each(function() {
+        var attr = $(this).attr('data-value')
+        var value = resolve(feed, attr)
+        if(value !== undefined) {
+          $(this).html(value)
+        } else {
+          $(this).html('n/a')
+        }
+      })
+    })
+
+    $('#dateSelection').on('change', function() {
+      console.log('change')
+      try {
+        var to = Date.now() + (Number($("#dateSelection").val()) * 24 * 60 * 60 * 1000);
+      } catch(err) {
+
+      }
+      refresh(undefined, to)
+    })
+
+    function refresh(from, to) {
+      console.log('refresh')
+      from = from || 1414264286000;
+      to = to || 1434450686000;
+
+      $.get('/api/feeds/'+feedName+'/1/avg/'+from+'/'+to, function(rawData) {
+        var data = []
+
+        //------ rickshaw
+        for(var i = 0 ; i < rawData.length ; i++) {
+          var measure = rawData[i];
+          data.push({x: new Date(measure.date).getTime()/1000, y: Number(measure.value)})
+        }
+        $('#myChart').html('')
+        if(data.length <= 1) {
+          return;
+        }
+        var graph = new Rickshaw.Graph( {
+          element: document.querySelector("#myChart"),
+          renderer: 'line',
+          width: 800,
+          height: 400,
+          series: [{
+            color: 'steelblue',
+            data: data
+          }]
+        });
+
+        graph.render();
+
+        var time = new Rickshaw.Fixtures.Time();
+        var xAxis = new Rickshaw.Graph.Axis.Time({
+          graph: graph
+        });
+        xAxis.render();
+
+        var hoverDetail = new Rickshaw.Graph.HoverDetail( {
+          graph: graph,
+          xFormatter: function(x) { return new Date(x*1000) },
+          yFormatter: function(y) { return y/1000 + ' Litres' }
+        } );
+
+      })
+
+    }
+
+    refresh();
+
+
+    function resolve(entity, attr) {
+      var attrs = attr.split('.')
+      var value = entity
+      while(value && attrs.length > 0) {
+        value = value[attrs.shift()]
+      }
+      return value;
+    }
+  })
+  </script>
+
+</body>
+
+</html>

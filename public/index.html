@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="">
+  <meta name="author" content="">
+
+  <title>Metrano - admin</title>
+
+  <link href="css/bootstrap.min.css" rel="stylesheet">
+
+  <link href="css/simple-sidebar.css" rel="stylesheet">
+
+  <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+  <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+  <!--[if lt IE 9]>
+  <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+  <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+  <![endif]-->
+
+</head>
+
+<body>
+
+  <div id="wrapper">
+
+    <!-- Sidebar -->
+    <div id="sidebar-wrapper">
+      <ul class="sidebar-nav">
+        <li class="sidebar-brand">
+          <a href="#">
+            Start Bootstrap
+          </a>
+        </li>
+        <li>
+          <a href="#">Dashboard</a>
+        </li>
+        <li>
+          <a href="#">Shortcuts</a>
+        </li>
+        <li>
+          <a href="#">Overview</a>
+        </li>
+        <li>
+          <a href="#">Events</a>
+        </li>
+        <li>
+          <a href="#">About</a>
+        </li>
+        <li>
+          <a href="#">Services</a>
+        </li>
+        <li>
+          <a href="#">Contact</a>
+        </li>
+      </ul>
+    </div>
+
+    <div id="page-content-wrapper">
+      <div class="container-fluid">
+
+        <div class="row">
+          <div class="col-lg-12">
+            <h1>Feeds</h1>
+            <ul id="feeds">
+            </ul>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-lg-12">
+            <h1>Add a new feed</h1>
+            <form method="post" action="/api/feeds" class="form-horizontal">
+              <div class="form-group">
+                <label for="name" class="col-sm-2 control-label">Name</label>
+                <div class="col-sm-10">
+                  <input type="text" name="name" placeHolder="Name"/>
+                </div>
+              </div>
+
+              <p>Aggregate Thresholds</p>
+
+              <div class="form-group">
+                <label for="aggregateThresholds.minute" class="col-sm-2 control-label">Minutes</label>
+                <div class="col-sm-10">
+                  <input type="text" name="aggregateThresholds.minute" placeHolder="Minutes"/>
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="aggregateThresholds.hour" class="col-sm-2 control-label">Hours</label>
+                <div class="col-sm-10">
+                  <input type="text" name="aggregateThresholds.hour" placeHolder="Hours"/>
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="aggregateThresholds.day" class="col-sm-2 control-label">Days</label>
+                <div class="col-sm-10">
+                  <input type="text" name="aggregateThresholds.day" placeHolder="Days"/>
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="aggregateThresholds.week" class="col-sm-2 control-label">Weeks</label>
+                <div class="col-sm-10">
+                  <input type="text" name="aggregateThresholds.week" placeHolder="Weeks"/>
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="aggregateThresholds.month" class="col-sm-2 control-label">Months</label>
+                <div class="col-sm-10">
+                  <input type="text" name="aggregateThresholds.month" placeHolder="Months"/>
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="aggregateThresholds.quarter" class="col-sm-2 control-label">Quarters</label>
+                <div class="col-sm-10">
+                  <input type="text" name="aggregateThresholds.quarter" placeHolder="Quarters"/>
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="aggregateThresholds.year" class="col-sm-2 control-label">Years</label>
+                <div class="col-sm-10">
+                  <input type="text" name="aggregateThresholds.year" placeHolder="Years"/>
+                </div>
+              </div>
+              <div class="form-group">
+                <div class="col-sm-offset-2 col-sm-10">
+                  <button id="newFeedButton" type="submit" class="btn btn-success">Create</button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+
+  <script src="js/jquery-2.1.1.min.js"></script>
+  <script src="js/bootstrap.min.js"></script>
+
+  <script>
+
+  var aggrThresholds = [
+    'minute',
+    'hour',
+    'day',
+    'week',
+    'month',
+    'quarter',
+    'year'
+  ]
+
+  $(document).ready(function() {
+    refreshFeeds()
+    $('#newFeedButton').click(function() {
+
+      var feed = {
+        name: $('input[name="name"]').val(),
+        aggregateThresholds: {}
+      }
+
+      for(var i = 0 ; i < aggrThresholds.length ; i++) {
+        var aggrThreshold = aggrThresholds[i];
+        if($('input[name="aggregateThresholds.'+aggrThreshold+'"]').val()) {
+          feed.aggregateThresholds[aggrThreshold] = $('input[name="aggregateThresholds.'+aggrThreshold+'"]').val()
+        }
+      }
+
+      $.post('/api/feeds', feed, function(feed) {
+        refreshFeeds()
+      })
+
+      return false
+    })
+  })
+
+  function refreshFeeds() {
+    $.get('/api/feeds', function(feeds) {
+      $('#feeds').html('')
+      for(var i = 0 ; i < feeds.length ; i++) {
+        $('#feeds').append('<li><a href="/feed.html?name='+feeds[i].name+'">'+feeds[i].name+'</a></li>')
+      }
+    })
+  }
+  </script>
+
+</body>
+
+</html>

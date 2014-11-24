@@ -27,29 +27,35 @@ APIs
 ### fetch data
 
 ```
-GET /feed/<feedName>/<deviceId>/<aggrFunction>/<fromTimestamp>/<toTimestamp>
+GET /feeds/<feedName>/<deviceId>/<aggrFunction>/<fromTimestamp>/<toTimestamp>
 ```
 
 Where:
 - ```feedName``` is the name of the feed to retrieve data from
 - ```deviceId``` is the unique id of the data of the feed
 - ```aggrFunction``` is the calculation function to apply to feed values when
-they need to be aggregated. Can be one of ```sum```, ```avg```.
-- ```fromTimestamp``` the time in milliseconds since Epoch from which data
-should be retrieved
-- ```toTimestamp``` the time in milliseconds since Epoch until which the data
-should be retrieved
+they need to be aggregated. Can be one of:
+  - ```sum```
+	- ```avg```
+	- ```count```
+	- ```max```
+	- ```min```
+	- ```stddev_pop``` population standard deviation of the input values
+	- ```stddev_samp``` sample standard deviation of the input values
+	- ```var_pop``` population variance of the input values (square of the population standard deviation)
+	- ```var_samp``` sample variance of the input values (square of the sample standard deviation)
+- ```fromTimestamp``` the time in milliseconds since UTC Epoch from which data should be retrieved
+- ```toTimestamp``` the time in milliseconds since UTC Epoch until which the data should be retrieved
 
 The data is automatically aggregated based on the feed configuration and the
 requested time interval.
-
 
 ### push values
 
 a single data point:
 
 ```
-POST /api/feed/<feedName>/<deviceId>
+POST /api/feeds/<feedName>/<deviceId>
 {
 	value: 123,
 	timestamp: 1414943636741
@@ -61,7 +67,7 @@ The timestamp (in milliseconds) timezone is interpreted as UTC.
 ### define a new metric
 
 ```
-POST /api/feed
+POST /api/feeds
 {
 	name: 'temperature',
 	aggregateThresholds: {
@@ -79,10 +85,20 @@ Depending on the amount of data you want to retrieve, Metrano will reduce it
 based on the values in the configuration.
 
 Available aggregates references are:
+- ```microseconds```
+- ```milliseconds```
+- ```second```
 - ```minute```
 - ```hour```
 - ```day```
+- ```week```
 - ```month```
+- ```quarter```
+- ```year```
+- ```decade```
+- ```century```
+- ```millennium```
+
 
 
 Client
