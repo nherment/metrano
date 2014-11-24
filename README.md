@@ -104,9 +104,11 @@ Available aggregates references are:
 Client
 ======
 
+```
 var Metrano = require('metrano')
 
-var metrano = new Metrano('http://localhost:3000/')
+var metrano = new Metrano()
+metrano.setRemoteURL('http://localhost:3000/')
 
 metrano.define({
 		name: 'temperature',
@@ -125,5 +127,6 @@ metrano.remove(feed, function(err) {
 })
 
 metrano.save(<feed>, <device_id>, <value>, <UTC_timestamp>, function(err) {
-	// metric saved
+	// metric saved if no error
 })
+```
