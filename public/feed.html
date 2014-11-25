@@ -34,30 +34,12 @@
     <div id="sidebar-wrapper">
       <ul class="sidebar-nav">
         <li class="sidebar-brand">
-          <a href="#">
-            Start Bootstrap
+          <a href="/">
+            Metrano
           </a>
         </li>
         <li>
-          <a href="#">Dashboard</a>
-        </li>
-        <li>
-          <a href="#">Shortcuts</a>
-        </li>
-        <li>
-          <a href="#">Overview</a>
-        </li>
-        <li>
-          <a href="#">Events</a>
-        </li>
-        <li>
-          <a href="#">About</a>
-        </li>
-        <li>
-          <a href="#">Services</a>
-        </li>
-        <li>
-          <a href="#">Contact</a>
+          <a href="/">Dashboard</a>
         </li>
       </ul>
     </div>
@@ -80,6 +62,11 @@
         </div>
         <div class="row">
           <div class="col-lg-12">
+            <h2>Data</h2>
+            <p>
+              Fill in the form below to display existing data.
+              It defaults to the last 60 minutes.
+            </p>
             <form>
               <input id="deviceId" type="text" placeholder="deviceId"/>
               <p id="jqueryExample">
@@ -88,6 +75,7 @@
                 <input type="text" class="time end" />
                 <input type="text" class="date end" />
               </p>
+              <input id="refreshChart" type="button" class="btn btn-info" value="refresh"/>
             </form>
             <div id="myChart" class="chart"></div>
 
@@ -127,6 +115,7 @@
       })
     })
 
+    var range = {};
     var deviceId = $.urlParam('deviceId');
 
     $('#deviceId').on('keyup', function() {
@@ -136,13 +125,8 @@
       $('#deviceId').val(deviceId)
     }
 
-    $('#dateSelection').on('change', function() {
-      try {
-        var to = Date.now() + (Number($("#dateSelection").val()) * 24 * 60 * 60 * 1000);
-      } catch(err) {
-
-      }
-      refresh(deviceId, undefined, to)
+    $('#refreshChart').click(function() {
+      refresh(deviceId, range.from, range.to)
     })
 
     function refresh(deviceId, from, to) {
@@ -229,13 +213,11 @@
     // initialize datepair
     var datePair = $('#jqueryExample').datepair();
     $('#jqueryExample').on('rangeSelected', function(){
-      var range = datePair.datepair('getTimeRange');
-      // console.log('from:', new Date(range.from), 'to:', new Date(range.to))
-      refresh(deviceId, range.from, range.to);
+      range = datePair.datepair('getTimeRange');
     }).on('rangeIncomplete', function(){
-      refresh(deviceId);
+      range = {};
     }).on('rangeError', function(){
-      refresh(deviceId);
+      range = {};
     });
 
 
