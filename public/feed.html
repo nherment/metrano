@@ -50,7 +50,7 @@
       <div class="container-fluid">
         <div class="row">
           <div class="col-lg-12">
-            <h1 data-value="name"></h1>
+            <h1><span data-value="name"></span> <span class="badge" data-stats="count"></span></h1>
             <ul>
               <li>minute: <span data-value="aggregateThresholds.minute"></span></li>
               <li>hour: <span data-value="aggregateThresholds.hour"></span></li>
@@ -107,6 +107,17 @@
       $('[data-value]').each(function() {
         var attr = $(this).attr('data-value')
         var value = resolve(feed, attr)
+        if(value !== undefined) {
+          $(this).html(value)
+        } else {
+          $(this).html('n/a')
+        }
+      })
+    })
+    $.get('/api/feeds/' + feedName + '/all/stats', function(stats) {
+      $('[data-stats]').each(function() {
+        var attr = $(this).attr('data-stats')
+        var value = resolve(stats, attr)
         if(value !== undefined) {
           $(this).html(value)
         } else {

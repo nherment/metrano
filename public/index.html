@@ -48,7 +48,7 @@
         <div class="row">
           <div class="col-lg-12">
             <h1>Feeds</h1>
-            <ul id="feeds">
+            <ul id="feeds" class="items">
             </ul>
           </div>
         </div>
@@ -165,7 +165,17 @@
     $.get('/api/feeds', function(feeds) {
       $('#feeds').html('')
       for(var i = 0 ; i < feeds.length ; i++) {
-        $('#feeds').append('<li><a href="/feed.html?name='+feeds[i].name+'">'+feeds[i].name+'</a></li>')
+        var link = $('<a href="/feed.html?name='+feeds[i].name+'">'+feeds[i].name+'</a>')
+        var lineItem = $('<li></li>')
+        lineItem.append(link)
+        $('#feeds').append(lineItem);
+        (function(feedName, link) {
+          $.get('/api/feeds/' + feedName + '/all/stats', function(stats) {
+            if(stats) {
+              link.append(' <span class="badge">' + (stats.count || 0) + '</span>')
+            }
+          })
+        })(feeds[i].name, link)
       }
     })
   }

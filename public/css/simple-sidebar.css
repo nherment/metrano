@@ -6,6 +6,18 @@
 
 /* Toggle Styles */
 
+ul.items {
+  list-style-type: none;
+  padding: 10px;
+  margin: 0px;
+}
+
+ul.items li {
+  padding: 0px;
+  margin: 10px 0px;
+  font-size: 1.5em;
+}
+
 #wrapper {
     padding-left: 0;
     -webkit-transition: all 0.5s ease;
