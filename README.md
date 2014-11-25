@@ -16,10 +16,16 @@ Install
 Server
 ======
 
+The server exposes a very basic user interface to browse feeds.
+
 start with ```node metrano.js```
 
 options:
 - ```--cleanup``` to reset the config table
+
+
+![Dashboard screenshot](docs/screenshot_dashboard.png "The dashboard")
+![Feed screenshot](docs/screenshot_temperature.png "A feed")
 
 APIs
 ----
