@@ -30,10 +30,78 @@ options:
 APIs
 ----
 
+### list feeds
+
+```
+GET /feeds
+[
+  {
+    name: "temperature",
+    aggregateThresholds: {
+      minute: "0",
+      hour: "7200000",
+      day: "172800000",
+      month: "62208000000"
+    },
+    id: 1,
+    _type: "feeds"
+  },
+  {
+    name: "humidity",
+    aggregateThresholds: {
+      minute: "0",
+      hour: "7200000",
+      day: "172800000",
+      month: "62208000000"
+    },
+    id: 2,
+    _type: "feeds"
+  }
+]
+```
+
+
+### feed definition
+
+```
+GET /feed/<feedName>
+{
+  name: "temperature",
+  aggregateThresholds: {
+    minute: "0",
+    hour: "7200000",
+    day: "172800000",
+    month: "62208000000"
+  },
+  id: 1,
+  _type: "feeds"
+}
+```
+
+
+### stats
+
+```
+GET /feeds/<feedName>/<deviceId>/stats
+
+{
+    count: <number_of_data_items>
+}
+```
+
+Where:
+- ```feedName``` is the name of the feed to retrieve data from
+- ```deviceId``` is the unique id of the data of the feed or ```all`` to apply
+to all devices
+
 ### fetch data
 
 ```
 GET /feeds/<feedName>/<deviceId>/<aggrFunction>/<fromTimestamp>/<toTimestamp>
+[
+  { date: 1414800000000, value: 18.322324 },
+  { ... }
+]
 ```
 
 Where:

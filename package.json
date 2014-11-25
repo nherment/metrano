@@ -27,7 +27,7 @@
     "express": "4.10.0",
     "moment": "2.8.3",
     "optimist": "0.6.1",
-    "postgresql-orm": "0.1.6",
+    "postgresql-orm": "0.1.8",
     "request": "2.47.0",
     "serve-static": "1.7.1"
   },
